@@ -1,12 +1,14 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const {
+  CleanWebpackPlugin
+} = require("clean-webpack-plugin");
 
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: ["./src/index.js"],
   output: {
     filename: "bundle.js",
-    path: __dirname + "/public",
+    path: __dirname + "/build",
     publicPath: "/"
   },
   module: {
@@ -22,6 +24,13 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+          generator: {
+             filename: 'images/[name][ext]'
+          }
       }
     ]
   },
