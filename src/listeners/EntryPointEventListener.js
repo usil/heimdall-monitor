@@ -8,8 +8,9 @@ class EntryPointEventListener {
   }
 
   async start() {
-    var response = await fetch("http://localhost:8081/data");
+    var response = await fetch("http://127.0.0.1:3000/monitor/target/result-sumary/webs?sinceDay=90");
     var targetServices = await response.json();
+
     let html = ejs.render(template, {
       targetServices: targetServices
     });
