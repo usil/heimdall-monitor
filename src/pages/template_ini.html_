@@ -7,7 +7,7 @@
         </svg>
         <div class="content text-center transform -translate-y-1/2 top-1/2 ml-8 w-72 text-sm object-left"><%=targetService.description%></div>
       </div><span>
-        <div class="text-xl"><%=targetService.label%></div>
+        <div class="text-xl"><%=targetService.webBaseUrl%></div>
       </span>
     </div>
     <div class="pill leading-5 bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200"><%=targetService.globalStatus%></div>
