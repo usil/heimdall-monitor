@@ -1,35 +1,19 @@
 {
-  "name": "webpack-minimal-boilerplate-setup-starter",
+  "name": "heimdall-monitor",
   "version": "1.0.0",
   "description": "",
-  "main": "webpack.config.js",
-  "dependencies": {
-    "@babel/core": "7.4.4",
-    "@babel/preset-env": "7.4.4",
-    "axios": "^0.27.2",
-    "babel-loader": "8.0.5",
-    "clean-webpack-plugin": "^4.0.0",
-    "css-loader": "^6.7.1",
-    "ejs": "^3.1.8",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "5.3.2",
-    "style-loader": "^3.3.1",
-    "url-loader": "^4.1.1",
-    "webpack": "5.73.0",
-    "webpack-cli": "4.10.0",
-    "webpack-dev-server": "4.9.3"
-  },
-  "devDependencies": {
-    "html-loader": "^3.1.2"
-  },
+  "main": "index.js",
   "scripts": {
-    "dev": "export NODE_ENV=development && webpack-dev-server --progress --config=webpack.dev.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "export NODE_ENV=production && webpack --progress --config=webpack.prod.config.js"
+    "dev": "linkstart dev",
+    "build": "linkstart build",
+    "start": "linkstart start"
   },
-  "author": {
-    "name": "JRichardsz.java",
-    "email": "jrichardsz.java@gmail.com"
+  "author": "jrichardsz",
+  "license": "MIT",
+  "dependencies": {
+    "linkstartjs": "file:../linkstartjs"
   },
-  "license": "MIT"
+  "localDependencies": {
+    "linkstartjs": "github:linkstartjs/linkstartjs#1.0.0"
+  }
 }

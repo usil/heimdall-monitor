@@ -11,10 +11,16 @@ Minimal status monitor for http services
 
 ### Technologies
 
+- Linkstart.js
 - Webpack
 - Babel
 - [Ejs](https://ejs.co/)
 
+### Settings
+
+```
+export HEIMDALL_MONITOR_API_BASE_URL=http://127.0.0.1:3000
+```
 
 ### Commands?
 
