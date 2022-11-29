@@ -42,22 +42,37 @@
           </svg>
           <div class="content text-center transform -translate-y-1/2 top-1/2 ml-8 w-72 text-sm object-left"><%=targetService.description%></div>
         </div><span>
-          <div class="text-xl"><%=targetService.label%></div>
+          <div class="text-xl"><%=targetService.webBaseUrl%></div>
         </span>
       </div>
       <div class="pill leading-5 bg-<%=todayStatusColor%>-200 text-<%=todayStatusColor%>-800 dark:bg-<%=todayStatusColor%>-800 dark:text-<%=todayStatusColor%>-200"><%=todayStatusLabel%></div>
     </div>
     <div class="flex flex-row items-center histogram">
-      <% targetService.statusDetail.forEach(function(status){ %>
-      <% var labelStatus = status.incidentsCount>0 ? status.incidentsCount+" Incidents":"All Good"; %>
-      <% var labelColor = status.incidentsCount>0 ? "yellow":"green"; %>
-      <div class="hitbox tooltip">
-        <div class="<%=labelColor%> bar"></div>
-        <div class="content text-center py-1 px-2 mt-2 left-1/2 -ml-20 w-40 text-xs"><%=status.dateString%><br><span class="font-semibold text-sm"><%=labelStatus%></span>
-          <br><small><%=status.averageResponseTimeMillis%>ms</small>
+
+      <% var days = targetService.statusDetail.length; %>
+      <% var today = new Date(); %>
+      <% for(var i=0; i<90-days; i++) {%>
+        <% var labelStatus = "Empty"; %>
+        <% var labelColor = "gray"; %>
+        <% var _day = new Date(); _day.setDate(today.getDate()-89+i);%>
+        <% var dateString = dateToYMD(_day); %>
+        <div class="hitbox tooltip">
+          <div class="<%=labelColor%> bar"></div>
+          <div class="content text-center py-1 px-2 mt-2 left-1/2 -ml-20 w-40 text-xs"><%=dateString%><br><span class="font-semibold text-sm"><%=labelStatus%></span>
+            <br><small>0ms</small>
+          </div>
         </div>
-      </div>
-      <% }); %>
+      <% } %>      
+      <% targetService.statusDetail.forEach(function(status){ %>
+        <% var labelStatus = status.incidentsCount>0 ? status.incidentsCount+" Incidents":"All Good"; %>
+        <% var labelColor = status.incidentsCount>0 ? "yellow":"green"; %>
+        <div class="hitbox tooltip">
+          <div class="<%=labelColor%> bar"></div>
+          <div class="content text-center py-1 px-2 mt-2 left-1/2 -ml-20 w-40 text-xs"><%=status.dateString%><br><span class="font-semibold text-sm"><%=labelStatus%></span>
+            <br><small><%=status.averageResponseTimeMillis%>ms</small>
+          </div>
+        </div>
+      <% }); %>    
     </div>
     <div class="flex flex-row justify-between items-center text-gray-400 text-sm">
       <div>90
@@ -75,4 +90,10 @@
   function updateGlobalTodayStatus(){
     console.log(document.getElementById("globalTodayStatus"));
   }
+  function dateToYMD(date) {
+    var d = date.getDate();
+    var m = date.getMonth() + 1;
+    var y = date.getFullYear();
+    return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+  }  
 %>
