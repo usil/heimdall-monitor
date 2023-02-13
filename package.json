@@ -11,7 +11,9 @@
   "author": "jrichardsz",
   "license": "MIT",
   "dependencies": {
-    "linkstartjs": "file:../linkstartjs"
+    "axios": "^1.3.2",
+    "linkstartjs": "file:../linkstartjs",
+    "querystring": "^0.2.1"
   },
   "localDependencies": {
     "linkstartjs": "github:linkstartjs/linkstartjs#1.0.0"
