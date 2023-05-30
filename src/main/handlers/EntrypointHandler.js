@@ -26,7 +26,8 @@
 
       if (pathName === "" || pathName === "/") {
         var heimdallUserToken = localStorage.getItem("heimdallUserToken");
-        if(typeof heimdallUserToken === 'undefined' || heimdallUserToken == null){
+        console.log(typeof heimdallUserToken)
+        if(typeof heimdallUserToken === 'undefined' || heimdallUserToken === null){
           console.debug("token is null, go to login");
           document.dispatchEvent(new CustomEvent("simple-event", {
             'detail': {
@@ -36,14 +37,35 @@
           resolve();
           return;
         }
+        console.debug("token was found, validating ..."+heimdallUserToken);
+        var tokenInformation = null;
 
-        var tokenInformation = await this.heimdallApiClient.tokenValidate(heimdallUserToken)
+        try {
+          tokenInformation = await this.heimdallApiClient.tokenValidate(heimdallUserToken)
+        } catch (error) {
+          console.error(error);
+          console.error("token was found but cannot be validated");
+          localStorage.removeItem("heimdallUserToken");
+          document.dispatchEvent(new CustomEvent("simple-event", {
+            'detail': {
+              eventId: "unauthorizedEventHandler"
+            }
+          }));
+          resolve();
+          return;          
+        }
+
         if (tokenInformation.code == 200000 && tokenInformation.content.active === true) {
           //heimdallUserToken exists and is valid
           console.debug("token was found and is valid, go to home");
           document.dispatchEvent(new CustomEvent("simple-event", {
             'detail': {
-              eventId: "homeDashboardHandler"
+              eventId: "homeDashboardHandler",
+              httpErrorDetail : {
+                code:"aaa",
+                message:"bbb",
+                httpStatus: "ccc"
+              }
             }
           }));
           resolve();
@@ -51,6 +73,7 @@
         } else {
           //go to login page
           console.debug("token was found but is not active, go to login");
+          localStorage.removeItem("heimdallUserToken");
           document.dispatchEvent(new CustomEvent("simple-event", {
             'detail': {
               eventId: "unauthorizedEventHandler"
@@ -59,11 +82,11 @@
           resolve();
           return;
         }
-      }else if(pathName === "/default/callback"){
+      }else if(pathName === "/microsoft/ssr-callback"){
         window.history.pushState('', '', '/');
-        var heimdallUserToken = params.access_token;
-        if(typeof heimdallUserToken === 'undefined'  || heimdallUserToken == null ){
-          console.debug("token was not received in /default/callback, go to login");
+        var microsoftAuthCode = params.code;
+        if(typeof microsoftAuthCode === 'undefined'  || microsoftAuthCode == null ){
+          console.debug("microsoft [code] was not received in /microsoft/ssr-callback, go to login");
           document.dispatchEvent(new CustomEvent("simple-event", {
             'detail': {
               eventId: "unauthorizedEventHandler"
@@ -73,10 +96,11 @@
           return;
         }
 
-        var tokenInformation = await this.heimdallApiClient.tokenValidate(heimdallUserToken)
-        if (tokenInformation.code === 200000 && tokenInformation.content.active === true) {
-          console.debug("token was received in /default/callback and it is active, go to home");
-          localStorage.setItem("heimdallUserToken", heimdallUserToken);
+        console.debug("code was received from microsoft");
+        var tokenInformation = await this.heimdallApiClient.getTokenUsingMicrosoftAuthCode(microsoftAuthCode)
+        if (tokenInformation.code === 200000 && typeof tokenInformation.content.access_token !== 'undefined') {
+          console.debug("new token was received in /microsoft/ssr-callback, go to home");
+          localStorage.setItem("heimdallUserToken", tokenInformation.content.access_token);
           //heimdallUserToken exists and is valid
           document.dispatchEvent(new CustomEvent("simple-event", {
             'detail': {
@@ -86,11 +110,14 @@
           resolve();
         } else {
           //go to login page
-          console.debug("token was received in /default/callback but is not active, go to login");
+          console.debug("token was not returned in exchange of microsoft auth code, go to login");
           if (heimdallUserToken == null) {
             document.dispatchEvent(new CustomEvent("simple-event", {
               'detail': {
-                eventId: "unauthorizedEventHandler"
+                eventId: "unauthorizedEventHandler",
+                params : {
+                  httpErrorDetail : tokenInformation
+                }
               }
             }));
             resolve();

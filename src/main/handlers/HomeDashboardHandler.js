@@ -10,17 +10,19 @@ function HomeDashboardHandler() {
   @Binding
   this.targetServices;
 
+  @Autowire(name = "heimdallApiClient")
+  this.heimdallApiClient;  
+
   this.onLoad = () => {
     return new Promise(async(resolve, reject) => {
       var response;
       try {
-        response = await fetch(this.settings.heimdallApiBaseUrl+"/v1/monitor?daysAgo=90");
-        this.targetServices = await response.json();           
+        response = await this.heimdallApiClient.findAllMonitoredPages();
+        this.targetServices = response;           
       } catch (error) {
         console.error(error)
         this.targetServices = [];
       }
-      
       resolve();
     });    
   };

@@ -49,6 +49,25 @@ function HeimdallApiClient() {
         }
     };
 
+    this.getTokenUsingMicrosoftAuthCode = async (code) => {
+        try {
+            var tokenInformation = await
+                axios.post(`${this.settings.heimdallApiBaseUrl}/v1/oauth2/token/microsoft-auth-code`,{ code: code });
+            return tokenInformation.data;
+        } catch (err) {
+            return parseAxiosError(err, "Error while auth url was being requested");
+        }
+    };
+
+    this.findAllMonitoredPages = async () => {
+        try {
+            var response = await fetch(this.settings.heimdallApiBaseUrl+"/v1/monitor?daysAgo=90");
+            return await response.json();           
+          } catch (err) {
+            return parseAxiosError(err, "Error while monitored pages were being requested");
+          }
+    };    
+
     prepareHttpRequestConfig = () => {
         return {
             headers: {

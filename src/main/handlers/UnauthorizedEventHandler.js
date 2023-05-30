@@ -10,7 +10,17 @@ function UnauthorizedEventHandler() {
   @Autowire(name = "heimdallApiClient")
   this.heimdallApiClient;  
 
-  this.onLoad = () => {
+  @Binding
+  this.loginErrorMessage;  
+
+  this.onLoad = (inboundParams) => {
+
+    if(typeof inboundParams !== 'undefined' && typeof inboundParams.httpErrorDetail !== 'undefined' ){
+      this.loginErrorMessage = `code: ${inboundParams.httpErrorDetail.code}
+      message: ${inboundParams.httpErrorDetail.message}
+      httpStatus: ${inboundParams.httpErrorDetail.httpStatus}`;
+    }
+
     return new Promise(async(resolve, reject) => {          
       resolve();
     });    
